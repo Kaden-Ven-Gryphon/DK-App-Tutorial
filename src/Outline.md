@@ -1,0 +1,132 @@
+- Introduction
+	- short
+	- coverd topics
+	- app summery ->
+	- contents ->
+	- license ->
+	- feedback
+- VScode
+	- Installation
+	- basic project directory setup ->
+	- configuration
+		- global ->
+		- folder ->
+	- general Extendtions ->
+- Git
+	- intall
+	- setup
+		- ignore
+		- user
+	- basic use ->
+		- gui
+		- cml
+- Licence
+- Server
+	- intro overview
+		- fastapi
+		- uv
+		- uvicorn
+		- sqlalacmy
+		- docker
+	- install
+		- uv
+		- docker
+	- create the project
+		- init
+		- organization ->
+		- extenditons
+		- config
+			- vscode
+			- ruff
+		- dependencies
+	- fast pai hello world
+		- app
+		- defualt route
+		- uvicorn run
+		- bash/ps1
+	- Pytest seup
+		- config
+		- install
+		- test hello world
+	- shpinx 
+		- install 
+		- init
+		- config
+		- doc main route
+	- Docker
+		- install
+		- docker file
+		- run.ps1 sh
+			- ps, bash
+		- live rebooting 
+		- start.sh
+	- Server structure detail
+		- fastapi
+			- routes
+		- models
+		- schema
+		- db
+		- crud
+		- depdency
+	- database
+		- overview 
+			- table sturcture
+				- apendix
+		- database .py
+		- devscripts
+			- init db
+			- populate db -> crud
+			- clear db
+	- User model
+		- desc
+		- models
+		- schema
+		- crud
+		- route
+		- Test
+		- docs
+		- dependeincy 
+		- authen 
+		- utils
+		- env keys
+	- gocery
+	- todo
+	- budget
+	- sommery
+		- description
+		- full api json ref
+		- related apendix
+			- cheatsheet
+			- build and run comands
+			- trouble shooting
+			- file sturcture 
+			- database sturcture
+		- run configes
+- App
+	- overview
+	- install
+	- init
+	- project dir layout
+	- config
+	- Hello world
+- Apendix
+	- VScode
+		- configes
+			- global
+			- folder server
+			- folder webapp
+		- extentions
+			- general
+			- python
+			- react
+		- vs trouble shooting
+		- git sheat sheet
+		- git rouble shooting
+		- git config and ignore
+	- Python
+		- cheet sheet
+		- tourble shooting
+		- project structure
+		- configs
+		- ruff
+		- database sturcture
