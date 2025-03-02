@@ -210,6 +210,22 @@
 <p>Workspaces allow you effectively open multiple vs code projects at the same time under a single VSCode explorer.  The workspace folders do not have to be in the same parent folder, but in this case they will be.  More details on workspaces <a href="https://code.visualstudio.com/docs/editor/workspaces/workspaces">link</a>.</p>
 <p>We can add a workspace for the server project by right clicking in the explorer and choosing "add folder to workspace" then picking the <code>dk_server_ws</code> directory.</p>
 <p>We then want to save the workspace to a file in the main projects directory using "save workspace as" in the "file" menu.  When we reopen VSCode to work on the project we will want to use "open workspace from file" and open this file.</p>
+<p>You can modify the workspace save file to customize it.</p>
+<p>I added names to the different workspaces, this is also where you put your workspace level settings.</p>
+<pre><code>{
+	"folders": [
+		{
+			"name": "ROOT",
+			"path": "."
+		},
+		{
+			"name": "API_Server",
+			"path": "dk_server_ws"
+		}
+	],
+	"settings": {}
+}
+</code></pre>
 <h3 id="directory-overview"><a class="header" href="#directory-overview">Directory Overview</a></h3>
 <pre><code>DK_App
 |_ .vscode
@@ -276,6 +292,22 @@ git push
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

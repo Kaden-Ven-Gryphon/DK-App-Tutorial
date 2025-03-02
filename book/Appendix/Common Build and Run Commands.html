@@ -152,7 +152,25 @@
 
                 <div id="content" class="content">
                     <main>
-                        <pre><code>docker build -t &lt;IMAGE-NAME&gt; .
+                        <h2 id="start-server-with-hot-reloading"><a class="header" href="#start-server-with-hot-reloading">Start server with hot reloading:</a></h2>
+<h4 id="docker-start-script"><a class="header" href="#docker-start-script">Docker start script</a></h4>
+<pre><code>.\scripts\run.ps1
+</code></pre>
+<h4 id="docker-start-shell"><a class="header" href="#docker-start-shell">Docker start shell</a></h4>
+<pre><code>.\scripts\run.ps1 /bin/bash
+</code></pre>
+<h4 id="uvicorn-start-command"><a class="header" href="#uvicorn-start-command">uvicorn start command</a></h4>
+<pre><code>uv run uvicorn --app-dir ./src/dk_server dk_server.main:app --port 8000 --host 0.0.0.0 --reload
+</code></pre>
+<h3 id="docker"><a class="header" href="#docker">Docker</a></h3>
+<pre><code>docker build -t &lt;IMAGE-NAME&gt; .
+docker run --rm --name &lt;CONTAINER-NAME&gt; -p &lt;SOURCE-PORT&gt;:&lt;DESTINATION-PORT&gt; &lt;IMAGE-NAME&gt;
+docker volumes prune
+docker images prune
+</code></pre>
+<h4 id="example"><a class="header" href="#example">Example</a></h4>
+<pre><code>docker build -t dk-app-server .
+docker run --rm --name dk-app-api -p 8000:8000 dk-app-server
 </code></pre>
 
                     </main>
@@ -184,6 +202,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

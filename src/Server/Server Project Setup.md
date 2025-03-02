@@ -2,7 +2,7 @@
 
 The first thing that we want to do to get started is to create a branch on our git repository.
 
-![image](Pasted image 20250211214312.png)
+![image](../Resources/gitbranchui.png)
 
 Using the UI, we can create a branch off of the main branch and publish it.  Looking at your remote repository you should now be able to see the new branch.
 

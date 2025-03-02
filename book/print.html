@@ -405,6 +405,22 @@ git config --global user.email "&lt;EMAIL&gt;"
 <p>Workspaces allow you effectively open multiple vs code projects at the same time under a single VSCode explorer.  The workspace folders do not have to be in the same parent folder, but in this case they will be.  More details on workspaces <a href="https://code.visualstudio.com/docs/editor/workspaces/workspaces">link</a>.</p>
 <p>We can add a workspace for the server project by right clicking in the explorer and choosing "add folder to workspace" then picking the <code>dk_server_ws</code> directory.</p>
 <p>We then want to save the workspace to a file in the main projects directory using "save workspace as" in the "file" menu.  When we reopen VSCode to work on the project we will want to use "open workspace from file" and open this file.</p>
+<p>You can modify the workspace save file to customize it.</p>
+<p>I added names to the different workspaces, this is also where you put your workspace level settings.</p>
+<pre><code>{
+	"folders": [
+		{
+			"name": "ROOT",
+			"path": "."
+		},
+		{
+			"name": "API_Server",
+			"path": "dk_server_ws"
+		}
+	],
+	"settings": {}
+}
+</code></pre>
 <h3 id="directory-overview"><a class="header" href="#directory-overview">Directory Overview</a></h3>
 <pre><code>DK_App
 |_ .vscode
@@ -472,6 +488,167 @@ git push
 </li>
 </ul>
 <p>Lets get started.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="server-project-setup"><a class="header" href="#server-project-setup">Server Project Setup</a></h1>
+<p>The first thing that we want to do to get started is to create a branch on our git repository.</p>
+<p><img src="Server/../Resources/gitbranchui.png" alt="image" /></p>
+<p>Using the UI, we can create a branch off of the main branch and publish it.  Looking at your remote repository you should now be able to see the new branch.</p>
+<p>Now any changes we make will not affect the main branch, and we can make sure that all of the features are working and bug free before merging back into main.</p>
+<h3 id="create-the-uv-project"><a class="header" href="#create-the-uv-project">Create the UV project</a></h3>
+<p>Next we need to run <code>uv init --package</code> in the directory of the server.  By running it in the directory of the server, it will name the package the same as the directory's name.  If you want to specify a name, then run:</p>
+<p><code>uv init --package dk-server</code></p>
+<p>Replacing the name with your own projects name.</p>
+<p>This will create a src directory, and a pyproject.toml.  The pyproject file is used by uv and build tools to manage dependences and configure the running of tools like pytest.</p>
+<p>We also need to add a <code>.vscode</code> directory and add a <code>settings.json</code> and <code>extensions.json</code> files to it.</p>
+<p>Other files and directories to add:</p>
+<ul>
+<li>Directories
+<ul>
+<li>database (in dk-server)</li>
+<li>docs (in dk-server)</li>
+<li>devscripts (in src)</li>
+<li>tests (in dk-server)</li>
+<li>scripts (in workspace)</li>
+</ul>
+</li>
+<li>Files
+<ul>
+<li>Dockerfile (in workspace)</li>
+<li>.gitignore (in workspace)</li>
+<li>.dockerignore (in workspace)</li>
+<li>ruff.toml (in workspace)</li>
+<li>main.py (in dk_server)</li>
+</ul>
+</li>
+</ul>
+<p>Shown below:</p>
+<pre><code>dk_server_ws
+|- .vscode
+|- dk-server
+|  |- databases
+|  |- docs
+|  |- src
+|  |  |- devscripts
+|  |  |- dk_server
+|  |  |  |- __init__.py
+|  |  |  |- main.py
+|  |- tests
+|  |- .python-version
+|  |- pyproject.toml
+|  |- README.md
+|- scripts
+|- .dockerignore
+|- .gitignore
+|- Dockerfile
+|- ruff.toml
+</code></pre>
+<h3 id="configuration"><a class="header" href="#configuration">Configuration</a></h3>
+<p>Next we need to start filling out some of these files for configuring the project.</p>
+<h4 id="settingsjson"><a class="header" href="#settingsjson">settings.json</a></h4>
+<pre><code>{
+	// Python settings
+	"python.analysis.autoSearchPaths": true,
+	"python.analysis.diagnosticSeverityOverrides": {
+		"reportMissingImports": "none"
+	},
+	"python.analysis.extraPaths": [
+		"${workspaceFolder}/dk-server/src"
+	],
+	"python.envFile": "${workspaceFolder}/dk-server/.env",
+	"python.terminal.activateEnvironment": true,
+	"python.defaultInterpreterPath": "${workspaceFolder}/dk-server/.venv/Scripts/python",
+	// Test settings
+	"python.testing.pytestEnabled": true,
+	"python.testing.unittestEnabled": false,
+	"python.testing.cwd": "${worksapceFolder}/dk-server/tests",
+	"python.testing.pytestPath": "${workspaceFolder}/dk-server/.venv/Scripts/pytest",
+	"python.testing.autoTestDiscoverOnSaveEnabled": true,
+}
+</code></pre>
+<p>These are used by VSCode when running running the project.  The paths describe where various files or directory are that uv and pytest need to operate.  <code>${workspaceFolder}</code> is the root of the workspace, in this case that is dk_server_ws.  You will need to check these paths to make sure that they match the names of your own directories.</p>
+<p><em><strong>NOTE:</strong></em>  This if the paths for windows, on linux the <code>Scripts</code> in the path might be <code>bin</code> instead.</p>
+<h4 id="extensionsjson"><a class="header" href="#extensionsjson">extensions.json</a></h4>
+<pre><code>{
+	"recommendations": [
+		"ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+		"qwtel.sqlite-viewer",
+	]
+}
+</code></pre>
+<p>These are the extensions that you will want to add in order to work on the server.</p>
+<h4 id="rufftoml"><a class="header" href="#rufftoml">ruff.toml</a></h4>
+<pre><code>[format]
+indent-style = "tab"
+</code></pre>
+<p>This to configure ruff to use tabs in stead of spaces for its indention.  You can add any configurations for ruff here.</p>
+<h4 id="gitignore"><a class="header" href="#gitignore">.gitignore</a></h4>
+<pre><code># Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Sphinx Docs builds
+docs/build
+*rst
+!index.rst
+
+# secrets
+.env
+
+# Database
+*.sqlite
+
+
+</code></pre>
+<p>These are the files that we do not want git to track or upload to the repository.</p>
+<h4 id="dockerignore"><a class="header" href="#dockerignore">.dockerignore</a></h4>
+<pre><code># Docker Build tools
+docker_run.sh
+docker_run.ps1
+
+
+# Python related
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+.mypy_cache
+
+# Dev related
+ruff.toml
+.git
+.gitignore
+.vscode
+tests
+*.cover
+*.log
+.pytest_cache
+docs
+</code></pre>
+<p>These are the files that you do not want docker to build into the image.</p>
+<h4 id="pyprojecttoml"><a class="header" href="#pyprojecttoml">pyproject.toml</a></h4>
+<p>UV will mostly handle this file for you, but you need to add:</p>
+<pre><code>[tool.pytest.ini_options]
+pythonpath = "src"
+</code></pre>
+<p>to the file for pytest to operate.</p>
+<p>Now we need to test out the project by making a "hello world" server.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fastapi-hello-world"><a class="header" href="#fastapi-hello-world">FastAPI Hello World</a></h1>
 <p>To test that all these extensions are working and that the settings are properly configured we need to make our "hello world program"</p>
 <h3 id="first-hello"><a class="header" href="#first-hello">First Hello</a></h3>
@@ -517,7 +694,135 @@ def root():
 <p>To test if it is working you can enter the url <code>localhost:8000</code> in to your browser and it should return "This is dk_server Root"</p>
 <h3 id="hello-but-container-this-time"><a class="header" href="#hello-but-container-this-time">Hello (but container this time)</a></h3>
 <p>The next thing to test to running the server from a docker image and container.</p>
-<p>You will need to have docker installed. https://www.docker.com/</p>
+<p>You will need to have docker installed. <a href="https://www.docker.com/">https://www.docker.com/</a></p>
+<p>The project will also need a dockerfile.  This will be the directions that docker will use to create the container image of our api server.</p>
+<p>I used this as my reference for making my dockerfile: <a href="https://github.com/astral-sh/uv-docker-example/tree/main">link</a></p>
+<pre><code># Use a Python image with uv pre-installed
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+# Install the project into `/app`
+WORKDIR /app
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=./dk-server/uv.lock,target=uv.lock \
+    --mount=type=bind,source=./dk-server/pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+# Then, add the rest of the project source code and install it
+# Installing separately from its dependencies allows optimal layer caching
+ADD ./dk-server/ /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
+# ENV UV_ENV_FILE="./.env"
+
+# Reset the entrypoint, don't invoke `uv`
+ENTRYPOINT []
+
+# Run the FastAPI application by default
+# Uses `fastapi dev` to enable hot-reloading when the `watch` sync occurs
+# Uses `--host 0.0.0.0` to allow access from outside the container
+CMD ["/app/.venv/bin/uvicorn", "--app-dir", "./src/dk_server", "dk_server.main:app", "--port", "8000", "--host", "0.0.0.0"]
+</code></pre>
+<ul>
+<li>First it installs uv in the container.</li>
+<li>Then sets the working directory as <code>app</code>.</li>
+<li>Sets some environment variables.</li>
+<li>The first run commands loads in the projects lock file, pyproject.toml, and cache and installs all the project's dependencies.</li>
+<li>Then the source files are added to container</li>
+<li>The bin folder is added to the environments path.</li>
+<li>Finally a command is run in the container to run the server.</li>
+</ul>
+<p>I had to change quite a few paths in this file compared to the example one from the GitHub due to my project structure and where the dockerfile sets.</p>
+<h4 id="build"><a class="header" href="#build">Build</a></h4>
+<p>To build the image you can run:</p>
+<pre><code>docker build -t dk-app-server .
+</code></pre>
+<p><code>-t</code> is the name of the image.
+<code>.</code> is the location of the files, in this case the current directory.</p>
+<p>I had a few issues building my image, I was able to eventually fix them by deleting the <code>.venv</code> directory.</p>
+<h4 id="run"><a class="header" href="#run">Run</a></h4>
+<p>To run the container you can run:</p>
+<pre><code>docker run dk-app-server -p 8000:8000
+</code></pre>
+<p>This should start up the container, and the uvicorn server, so you can go to <code>localhost:8000</code> to see the hello world message.</p>
+<h4 id="hot-reloading"><a class="header" href="#hot-reloading">Hot Reloading</a></h4>
+<p>As we saw earlier you can use <code>--reload</code> when running uvicorn to automatically restart the server when changes are made to the source code.  This won't work in the container though as the code in the container is a copy of the project.</p>
+<p>While developing the server we want to be able to keep the option of hot reloading.  We could just develop the server running uvicorn directly, and then occasionally testing it as a container, but this can cause issues if for some reason your project runs fine locally, but does not run in the container then you have to go through all your changes from the last time you ran the container and figure out which one broke it.</p>
+<p>We want to be able to hot reload the server <em>while</em> it is in the container.  This can be done by mounting the project files into the container so that local files are used instead of the copies in the container.</p>
+<p><code>run.ps1</code></p>
+<pre><code>Param(
+	$Command
+)
+If (-Not $Command -eq '') {
+	docker run --rm --name devtest --mount type=bind,source=$(pwd)/dk-server,target=/app --volume /app/.venv --publish 8000:8000 -it $(docker build -q .) "$Command"
+} Else {
+	docker run --rm --name devtest --mount type=bind,source=$(pwd)/dk-server,target=/app --volume /app/.venv --publish 8000:8000 -it $(docker build -q .)  "./src/devscripts/start.sh"
+}
+</code></pre>
+<p>The GitHub with the example dockerfile also has a bash script to run the image with the source files mounted.</p>
+<p>I am working in windows at the moment so I had to convert it into a PowerShell script.  It works okay enough.  If you use the bash script instead, for this file structure <code>.:/app</code> will need to be changed to <code>./dk-server:/app</code>.  I also suggest changing the <code>--volume</code> to a <code>--mount</code> like in the above PowerShell script.  I was having issues with changes in the source files not appearing in the the container and finally figured out it was because I had accidently created a named volume instead.</p>
+<p>Here is docker's docs on how volumes and binds work: <a href="https://docs.docker.com/engine/storage/volumes/">link</a></p>
+<p>The other thing that needs to be added is the <code>start.sh</code> script.  This is just a one line bash script that runs the command with all the options set for starting the uvicorn server with reloading.</p>
+<p><code>start.sh</code></p>
+<pre><code>#!/usr/bin/env sh
+uv run uvicorn --app-dir ./src/dk_server dk_server.main:app --port 8000 --host 0.0.0.0 --reload
+</code></pre>
+<p>I put this in a <code>devscripts</code> directory under the <code>src</code> directory.</p>
+<p>Now you should be able to run <code>.\scripts\run.ps1</code> to start the container with the source code mounted as a bind and start uvicorn with reloading enabled.  Or you can run <code>.\scripts\run.ps1 /bin/bash</code> to start the container and start the command line in the container to test things.</p>
+<h2 id="action-buttons"><a class="header" href="#action-buttons">Action Buttons</a></h2>
+<p>Because we now have quite a few command that we have to run to work on or test the server I recommend setting up action buttons.  We already have the bash and PowerShell scripts to shorten it a little, but we can add a button to VSCode to run those scripts.   These settings will need to be added to you workspace save files setting section.</p>
+<pre><code>// Action Buttons
+
+	"actionButtons": {
+		"defaultColor": "#ff0034", // Can also use string color names.
+		"loadNpmCommands":false, // Disables automatic generation of actions for npm commands.
+		"reloadButton":"♻️", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
+		"commands": [
+			{
+				"cwd": "${workspaceFolder}",
+				"name": "$(triangle-right) Run Container",
+				"color": "green",
+				"command": ".\\scripts\\run.ps1",
+			},
+			{
+				"cwd": "${workspaceFolder}",
+				"name": "$(tools) Bash Container",
+				"color": "white",
+				"command": ".\\scripts\\run.ps1 /bin/bash",
+			},
+			{
+				"cwd": "${workspaceFolder}",
+				"name": "$(close)Docker Close",
+				"color": "red",
+				"command": ".\\scripts\\clean.ps1"
+			}
+		]
+	}
+</code></pre>
+<p>This will add three action buttons for us:</p>
+<ul>
+<li>"Run Container" This will run the PowerShell script to run the container with the source code bind and hot reloading.</li>
+<li>"Bash Container" This will open up the bash shell in the container.</li>
+<li>"Docker Close" This will stop the container and remove and images.</li>
+</ul>
+<p><code>clean.ps1</code></p>
+<pre><code>docker stop devtest
+docker image prune -f
+</code></pre>
+<p>These action button use the <code>${workSpaceFolder}</code> as the cwd.  VSCode uses the workspace of the currently active file to determine what you current workspace is.  This means that these will only work if you have on of the files for the dk_server_ws part of the project currently open.</p>
+<p>Feel free to change this to a hardcoded path, or to what ever you prefer depending on how you set up your workspace.</p>
+<p>Try making an action button to start up uvicorn without docker if you want.</p>
+<p>Next we will set up pytest.</p>
 <div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><p>[[Appendix]]</p>
 <h3 id="setup-git-user-info"><a class="header" href="#setup-git-user-info">Setup Git User Info</a></h3>
 <pre><code>git config --global user.name "NAME"
@@ -529,7 +834,31 @@ git config --global user.email "EMAIL"
 git config --global user.email "EMAIL"
 </code></pre>
 <p>With or without the <code>--global</code> option.</p>
-<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><pre><code>docker build -t &lt;IMAGE-NAME&gt; .
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h1 id="python-trouble-shooting"><a class="header" href="#python-trouble-shooting">Python Trouble Shooting</a></h1>
+<h3 id="uv-sync-cant-find-module-encodings"><a class="header" href="#uv-sync-cant-find-module-encodings"><code>UV sync cant find module encodings</code></a></h3>
+<p>I had this issue when creating my first docker image.  I was able to fix it by deleting the <code>.venv</code> directory and letting uv create a new one.</p>
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h1 id="docker-trouble-shooting"><a class="header" href="#docker-trouble-shooting">Docker Trouble Shooting</a></h1>
+<h3 id="bind-mount-does-not-update-in-container-when-updated-on-host"><a class="header" href="#bind-mount-does-not-update-in-container-when-updated-on-host">Bind mount does not update in container when updated on host.</a></h3>
+<p>I had this issue, and it was because I was using the <code>--volume</code> command.  I so how accidently created a named volume one of the times I was running the images and so every time after that when I ran the image it mounted this named volume instead of binding the source files.  Use <code>--mount</code> to explicitly state what you want, and look for unwanted volumes with <code>docker volume ls</code></p>
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h2 id="start-server-with-hot-reloading"><a class="header" href="#start-server-with-hot-reloading">Start server with hot reloading:</a></h2>
+<h4 id="docker-start-script"><a class="header" href="#docker-start-script">Docker start script</a></h4>
+<pre><code>.\scripts\run.ps1
+</code></pre>
+<h4 id="docker-start-shell"><a class="header" href="#docker-start-shell">Docker start shell</a></h4>
+<pre><code>.\scripts\run.ps1 /bin/bash
+</code></pre>
+<h4 id="uvicorn-start-command"><a class="header" href="#uvicorn-start-command">uvicorn start command</a></h4>
+<pre><code>uv run uvicorn --app-dir ./src/dk_server dk_server.main:app --port 8000 --host 0.0.0.0 --reload
+</code></pre>
+<h3 id="docker"><a class="header" href="#docker">Docker</a></h3>
+<pre><code>docker build -t &lt;IMAGE-NAME&gt; .
+docker run --rm --name &lt;CONTAINER-NAME&gt; -p &lt;SOURCE-PORT&gt;:&lt;DESTINATION-PORT&gt; &lt;IMAGE-NAME&gt;
+docker volumes prune
+docker images prune
+</code></pre>
+<h4 id="example"><a class="header" href="#example">Example</a></h4>
+<pre><code>docker build -t dk-app-server .
+docker run --rm --name dk-app-api -p 8000:8000 dk-app-server
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div>
                     </main>
@@ -549,6 +878,22 @@ git config --global user.email "EMAIL"
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

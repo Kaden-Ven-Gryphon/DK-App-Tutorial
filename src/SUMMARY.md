@@ -12,9 +12,10 @@
 # Server
 
 - [Introduction](./Server/Server.md)
-- [Project Setup](./Server/FastAPI%20Hello%20World.md)
-- [Pytest Setup](./Server/Pytest%20Setup.md)
-- [Numpy Docs and Spinx Setup](./Server/Numpy%20Docs%20and%20Sphinx%20Setup.md)
+- [Project Setup](./Server/Server%20Project%20Setup.md)
+	- [FastAPI Hello World](./Server/FastAPI%20Hello%20World.md)
+	- [Pytest Setup](./Server/Pytest%20Setup.md)
+	- [Numpy Docs and Sphinx Setup](./Server/Numpy%20Docs%20and%20Sphinx%20Setup.md)
 
 
 # Appendix
@@ -29,14 +30,17 @@
 	- [Git Ignores](./Appendix/Git%20Ignores.md)
 
 - [Scripting]()
-	- [Powershell Cheat Sheet](./Appendix/Powershell%20Cheat%20Sheet.md)
+	- [PowerShell Cheat Sheet](./Appendix/Powershell%20Cheat%20Sheet.md)
 	- [Bash Cheat Sheet](./Appendix/Bash%20Cheat%20Sheet.md)
 
 - [Python]()
 	- [Python Cheat Sheet](./Appendix/Python%20Cheat%20Sheet.md)
-	- [Python Trouble Shoot](./Appendix/Python%20Trouble%20Shoot.md)
+	- [Python Trouble Shooting](./Appendix/Python%20Trouble%20Shoot.md)
 	- [Python Configs](./Appendix/Python%20Configs.md)
 	- [Server Structure](./Appendix/Server%20Structure.md)
+
+- [Docker]()
+	- [Docker Trouble Shooting](./Appendix/Docker%20Trouble%20Shooting.md)
 
 - [App]()
 	- [API Reference](./Appendix/API%20Reference.md)

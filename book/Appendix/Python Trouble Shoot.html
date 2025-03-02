@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Python Trouble Shoot - DK App Tutorial</title>
+        <title>Python Trouble Shooting - DK App Tutorial</title>
 
 
         <!-- Custom HTML head -->
@@ -152,7 +152,10 @@
 
                 <div id="content" class="content">
                     <main>
-                        
+                        <h1 id="python-trouble-shooting"><a class="header" href="#python-trouble-shooting">Python Trouble Shooting</a></h1>
+<h3 id="uv-sync-cant-find-module-encodings"><a class="header" href="#uv-sync-cant-find-module-encodings"><code>UV sync cant find module encodings</code></a></h3>
+<p>I had this issue when creating my first docker image.  I was able to fix it by deleting the <code>.venv</code> directory and letting uv create a new one.</p>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -182,6 +185,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

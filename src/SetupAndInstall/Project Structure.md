@@ -87,6 +87,26 @@ We can add a workspace for the server project by right clicking in the explorer 
 
 We then want to save the workspace to a file in the main projects directory using "save workspace as" in the "file" menu.  When we reopen VSCode to work on the project we will want to use "open workspace from file" and open this file.
 
+You can modify the workspace save file to customize it.
+
+I added names to the different workspaces, this is also where you put your workspace level settings.
+
+```
+{
+	"folders": [
+		{
+			"name": "ROOT",
+			"path": "."
+		},
+		{
+			"name": "API_Server",
+			"path": "dk_server_ws"
+		}
+	],
+	"settings": {}
+}
+```
+
 ### Directory Overview
 
 ```
